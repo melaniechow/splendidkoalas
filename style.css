@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+@import url('https://fonts.googleapis.com/css?family=Comfortaa');
+
+body{
+  background-Color:#1F2B33;
+  color: #E8F6FE;
+  text-align: center;
+  font-family: 'Source Code Pro', monospace;
+}
+
+.input-area {
+  position: relative;
+}
+/*Editor*/
+.textarea {
+  width: 80%;
+  height: 550px;
+  padding: 11px 35px;
+  background: none;
+  box-sizing: border-box;
+  
+  font-family: 'Source Code Pro', monospace;
+  font-size: 16px;
+  color: #E8F6FE;
+  border: 2px solid #DB63A6; 
+  border-radius: 4px;
+
+  resize: none;
+  -webkit-appearance: none;
+	-moz-appearance: none;
+  appearance: none;
+
+  background-image: url("images/4.png");
+  background-attachment: local;
+  background-size: 33px;
+  background-repeat: no-repeat;
+}
+::placeholder {
+  color: #A7959F;
+}
+
+/*Button Style*/
+button{
+  padding: 10px;
+  width: 500px; 
+  border: none;
+  color: #E8F6FE;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 16px;
+  text-align: left;
+  outline: none;
+  background: none;
+}
+button:hover{
+  background-color: #353A55;
+  cursor: pointer;
+}
+
+/*Selection Menu*/
+ul {
+  display: inline-block;
+  border: 0.5px solid #383941; 
+  width: 500px; 
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+li {
+  border: 0.5px solid #383941; 
+}
+li:hover{
+  background-color: #353A55;
+  cursor: pointer;
+}
+
