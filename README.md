@@ -1,2 +1,5 @@
 # splendidkoalas
-Autocomplete
+
+![Code Editor](images/CodeEditor.png)
+
+
