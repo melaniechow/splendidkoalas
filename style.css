@@ -8,11 +8,12 @@ body{
   font-family: 'Source Code Pro', monospace;
 }
 
-.input-area {
+.InputArea {
   position: relative;
+  z-index: 1;
 }
 /*Editor*/
-.textarea {
+.Textarea {
   width: 80%;
   height: 550px;
   padding: 11px 35px;
@@ -58,15 +59,27 @@ button:hover{
 
 /*Selection Menu*/
 ul {
-  display: inline-block;
+  position: absolute;
   border: 0.5px solid #383941; 
   width: 500px; 
   list-style-type: none;
   margin: 0;
   padding: 0;
+  z-index: 2;
 }
 li {
+  padding: 7px;
+  height: 20px;
   border: 0.5px solid #383941; 
+  border: none;
+  color: #E8F6FE;
+
+  font-family: 'Source Code Pro', monospace;
+  font-size: 16px;
+  text-align: left;
+
+  outline: none;
+  background: none;
 }
 li:hover{
   background-color: #353A55;
