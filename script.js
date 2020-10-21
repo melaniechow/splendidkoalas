@@ -18,17 +18,19 @@
  * 
  */
 
+// Class Ids
 var textAreaID = "Input";
 var firstOptionId = "Option1";
 var optionClassName = "Option"
 var selectionClassName = "Selection";
 
+// HTML document objects
 var textarea = document.getElementById(textAreaID);
 
+// State of the site
 var selectionMenuPresent = true; 
 var currentOptionId = firstOptionId ; // Highlighted Option
-
-
+var clickMode = true; // Options are selected by click if true
 
 
 /*
@@ -134,6 +136,14 @@ function arrowPress(up) {}
 function highlightFirstOption() {
   var option = document.getElementById(firstOptionId);
   option.style.backgroundColor =  "#353A55";
+}
+
+/*
+ * Toggle the mode as key or mouse (click or enter) autocomplete
+ * selection feature
+ */
+function toggleMode() {
+  clickMode = !clickMode;
 }
 
 /*
