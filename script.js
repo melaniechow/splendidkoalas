@@ -29,20 +29,33 @@ var textarea = document.getElementById(textAreaID);
 
 // State of the site
 var selectionMenuPresent = true; 
-var currentOptionId = firstOptionId ; // Highlighted Option
+// current highlighted Option, this will change based on arrow key presses
+var currentOptionIdNum = 1 ; 
 var clickMode = true; // Options are selected by click if true
 
 
 /*
  * Detects when selection Menu should be generated and where
  */
-// TODO:
+function autocompleteDetection() {
+  // TODO:
+  var content = document.getElementById(textAreaId).value.split("\n");
+  var currentLineWords = content[content.length - 1].split(" ");
+  var currentWord = currentLineWords[currentLineWords.length -1];
+
+  // determing if currentWord is something we want to edit
+}
+
 
 
 /*
- * Detects when selection Menu should be moved and where
+ * If selectionMenu is present, moves the selection menu the most recent cursor 
+ * position
  */
-// TODO:
+function moveSelectionMenuAsUserType() {
+  // TODO:
+  // Most likely call this every key press
+}
 
 
 /* 
@@ -61,7 +74,9 @@ function createSelectionMenu(words, left, top){
     option.className = optionClassName;
     option.id = optionClassName + (i+1);
     option.innerHTML = words[i];
-    option.onclick = cursorClick();
+    if (clickMode) { // If click mode, select option upon clicking
+      option.onclick = cursorClick();
+    }
     ul.appendChild(option)
   }
   newDiv.appendChild(ul);
@@ -69,7 +84,7 @@ function createSelectionMenu(words, left, top){
   newDiv.style.position = "absolute";
   newDiv.style.left = left + "px";
   newDiv.style.top = top + "px";
-  highlightFirstOption();
+  highlightOption(firstOptionId);
 }
 
 /* 
@@ -108,34 +123,56 @@ function replaceText(start, end, text, newText) {
  * cursorClick is called when an option is selected with a cursor 
  * Replaces word with suggestion 
  */
-function cursorClick() {}
+function cursorClick() {
+  // TODO:
+
+}
 
 /*
- * tabClick is called when an option is selected with a tab
+ * enterPress is called when user presses enter on a current highlighted option
+ * or, if user chose not user the selection menu
+ * 
  * Replaces word with suggestion 
  */
-function tabPress() {}
-
-/*
- * enterClick is called when an option is selected with a tab
- * Replaces word with suggestion 
- */
-function enterPress() {}
+function enterPress() {
+  // TODO:
+  // Determine if user is chosing an option or is opting out of the autocomplete
+  // menu and is on the next line. 
+  
+}
 
 /*
  * Moves Highlighted option based on arrow key
+ * Updates the currentOptionIdNum up if up is true, down otherwise. 
+ * 0 < currentOptionIdNum <= number of options 
  * Inputs:
  *  up - boolean if arrowPress was up
  */
-function arrowPress(up) {}
+function arrowPress(up) {
+  // TODO:
+  // call this after listenting for a certain key press
+  if (up) {
+    // Move up
+  } else {
+    // Move Down
+  }
+}
 
 
 /* 
- * Highlight the first option in the selection menu 
+ * Highlight the option in the selection menu 
  */
-function highlightFirstOption() {
-  var option = document.getElementById(firstOptionId);
+function highlightOption(optionId) {
+  var option = document.getElementById(optionId);
   option.style.backgroundColor =  "#353A55";
+}
+
+/* 
+ * Removes highlight the option in the selection menu 
+ */
+function dehighlightOption(optionId) {
+  var option = document.getElementById(optionId);
+  option.style.backgroundColor =  "#383941";
 }
 
 /*
@@ -150,15 +187,32 @@ function toggleMode() {
  * Functions to call at start of program
  */
 function setUp() {
-  createSelectionMenu(["Peaches", "Totoro"],450,850);
+  // Example Selection Menu
+  createSelectionMenu(["Peaches", "Totoro"],450,880);
 }
 
 // Keypress event listenter
 document.body.onkeypress = function(e){
-  if(e.code == "Enter"){
+  if (selectionMenuPresent && !clickMode) {
+    if(e.code == "Enter"){
+        enterPress();
+    } else {
+      // Check the user input after every letter
+      moveSelectionMenuAsUserType();
+      autocompleteDetection();
+    }
   } 
-  // Add other cases down here
 }
 
+// On keydown
+document.body.onkeydown = function(e){
+  if (selectionMenuPresent && !clickMode) {
+    if(e.code == "ArrowDown"){
+      arrowPress(true);
+    } else if (e.code == "ArrowUp") {
+      arrowPress(false);
+    }
+  }
+}
 
 setUp();
