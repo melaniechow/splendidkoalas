@@ -7,6 +7,7 @@
  * Listen to user inputs and determine when to create selection menu []
  * Get location of user cursor []
  * Selection menu generator [DONE]
+ * Move current highlighted option with arrow keys [DONE]
  * Select option with arrow keys or on click []
  * Move selection menu as user types []
  * ?? Dynamic selection menu changes as user writes more? []
@@ -20,9 +21,10 @@
 
 // Class Ids
 var textAreaID = "Input";
-var firstOptionId = "Option1";
+var baseOptionId = "option";
 var optionClassName = "Option"
-var selectionClassName = "Selection";
+var selectionMenuClassName = "Selection";
+var selectionMenuID = "selectionMenu";
 
 // HTML document objects
 var textarea = document.getElementById(textAreaID);
@@ -66,13 +68,14 @@ function moveSelectionMenuAsUserType() {
  */
 function createSelectionMenu(words, left, top){
   var newDiv = document.createElement("div");
-  newDiv.className = selectionClassName;
-
+  newDiv.className = selectionMenuClassName;
   var ul = document.createElement("ul");
+  ul.id = selectionMenuID;
+
   for (var i = 0; i<words.length; i++) {
     var option = document.createElement("li");
     option.className = optionClassName;
-    option.id = optionClassName + (i+1);
+    option.id = baseOptionId + (i+1);
     option.innerHTML = words[i];
     if (clickMode) { // If click mode, select option upon clicking
       option.onclick = cursorClick();
@@ -84,7 +87,7 @@ function createSelectionMenu(words, left, top){
   newDiv.style.position = "absolute";
   newDiv.style.left = left + "px";
   newDiv.style.top = top + "px";
-  highlightOption(firstOptionId);
+  highlightOption(baseOptionId + 1);
 }
 
 /* 
@@ -153,8 +156,20 @@ function arrowPress(up) {
   // call this after listenting for a certain key press
   if (up) {
     // Move up
+    if (currentOptionIdNum > 0) {
+      dehighlightOption(baseOptionId + currentOptionIdNum);
+      currentOptionIdNum =  currentOptionIdNum - 1;
+      highlightOption(baseOptionId + currentOptionIdNum);
+    }
+    
   } else {
     // Move Down
+    var numOptions = document.getElementById(selectionMenuID).childElementCount;
+    if (currentOptionIdNum < numOptions) {
+      dehighlightOption(baseOptionId + currentOptionIdNum);
+      currentOptionIdNum =  currentOptionIdNum + 1;
+      highlightOption(baseOptionId + currentOptionIdNum);
+    }
   }
 }
 
@@ -164,7 +179,7 @@ function arrowPress(up) {
  */
 function highlightOption(optionId) {
   var option = document.getElementById(optionId);
-  option.style.backgroundColor =  "#353A55";
+  option.style.backgroundColor =  "#7b5294";
 }
 
 /* 
@@ -172,7 +187,7 @@ function highlightOption(optionId) {
  */
 function dehighlightOption(optionId) {
   var option = document.getElementById(optionId);
-  option.style.backgroundColor =  "#383941";
+  option.style.backgroundColor =  "#353A55";
 }
 
 /*
@@ -206,12 +221,17 @@ document.body.onkeypress = function(e){
 
 // On keydown
 document.body.onkeydown = function(e){
+  // Prevent arrow keys from scrolling the page
+  if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) { 
+    e.preventDefault();
+  }
+
   if (selectionMenuPresent && !clickMode) {
     if(e.code == "ArrowDown"){
-      arrowPress(true);
-    } else if (e.code == "ArrowUp") {
       arrowPress(false);
-    }
+    } else if (e.code == "ArrowUp") {
+      arrowPress(true);
+    } 
   }
 }
 
