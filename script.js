@@ -32,7 +32,7 @@ var textarea = document.getElementById(textAreaID);
 // State of the site
 var selectionMenuPresent = false; 
 // current highlighted Option, this will change based on arrow key presses
-var currentOptionIdNum = 2; 
+var currentOptionIdNum = 1; 
 var clickMode = true; // Options are selected by click if true
 
 // Experiment Variables
@@ -183,10 +183,10 @@ function cursorClick(option) {
  * Replaces word with suggestion 
  */
 function enterPress() {
-  // TODO:
-  // Determine if user is chosing an option or is opting out of the autocomplete
-  // menu and is on the next line. 
-  
+  if (selectionMenuPresent) {
+    const option = document.getElementById(baseOptionId + currentOptionIdNum).innerHTML;
+    replaceTextLastWord(textarea, option);
+  }
 }
 
 /**
@@ -253,7 +253,8 @@ function setUp() {
 document.body.onkeypress = function(e){
   if (selectionMenuPresent && !clickMode) {
     if(e.code == "Enter"){
-        enterPress();
+      e.preventDefault();
+      enterPress();
     } 
   } 
 }
