@@ -8,14 +8,14 @@
  * Get location of user cursor [DONE]
  * Selection menu generator [DONE]
  * Move current highlighted option with arrow keys [DONE]
- * Select option with arrow keys or on click []
+ * Select option with arrow keys or on click [DONE]
  * Move selection menu as user types [DONE]
  * Dynamic selection menu changes as user writes more? [DONE]
  * 
- * Replace text with suggestion after a trigger action []
- *    Tab []
- *    Enter []
- * Remove menu  []
+ * Replace text with suggestion after a trigger action [DONE]
+ *    Enter [DONE]
+ *    Click [DONE]
+ * Remove menu  [DONE]
  * 
  */
 
