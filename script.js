@@ -4,8 +4,8 @@
  * Reference: https://codepen.io/shotastage/pen/KaKwya
  * 
  * 
- * Listen to user inputs and determine when to create selection menu [Celine]
- * Get location of user cursor []
+ * Listen to user inputs and determine when to create selection menu [DONE]
+ * Get location of user cursor [DONE]
  * Selection menu generator [DONE]
  * Move current highlighted option with arrow keys [DONE]
  * Select option with arrow keys or on click []
@@ -36,7 +36,7 @@ var currentOptionIdNum = 2;
 var clickMode = true; // Options are selected by click if true
 
 // Experiment Variables
-var keyWords = ["square"];
+var keyWords = ["square", "squareOne", "squareTwo"];
 var numMatching = 2;
 
 /**
@@ -47,52 +47,52 @@ function detectOption() {
   autocompleteDetection();
 }
 
-/*
+/**
  * Detects when selection Menu should be generated and where
  */
 function autocompleteDetection() {
-  if (!selectionMenuPresent) {
-    var content = document.getElementById(textAreaID).value.split("\n");
-    var currentLineWords = content[content.length - 1].split(" ");
-    var currentWord = currentLineWords[currentLineWords.length -1];
-    var optionWords = []
+  if (selectionMenuPresent) {
+    deleteSelectionMenu();
+  }
+  var content = document.getElementById(textAreaID).value.split("\n");
+  var currentLineWords = content[content.length - 1].split(" ");
+  var currentWord = currentLineWords[currentLineWords.length -1];
+  var optionWords = []
 
-    // if the currentword has at least numMatching letters, select as option.
-    for (var i = 0; i < keyWords.length; i++) {
-      var count = 0;
-      var j = 0;
-      while (j < currentWord.length && j < keyWords[i].length) {
-        if (count >= numMatching) {
-          break;
-        }
-        if (currentWord.charAt(j) == keyWords[i].charAt(j)) {
-          j++;
-          count++;
-          
-        } else {
-          break;
-        }
-      }
-      
-      if (count >= numMatching) {
-        optionWords.push(keyWords[i]);
+  // if the currentword has at least numMatching letters, select as option.
+  for (var i = 0; i < keyWords.length; i++) {
+    var count = 0;
+    var j = 0;
+    while (j < currentWord.length && j < keyWords[i].length) {
+      if (currentWord.charAt(j) == keyWords[i].charAt(j)) {
+        j++;
+        count++;
+      } else {
+        break;
       }
     }
-  
-    // If there is at least one potential option word, generate menu
-    if (optionWords.length > 0) {
-      var cursorPoint = getCursorXY(content.length, content[content.length - 1].length);
-      createSelectionMenu(optionWords, cursorPoint.x, cursorPoint.y);
+    if (count >= numMatching && count >= currentWord.length) {
+      optionWords.push(keyWords[i]);
     }
+  }
+
+  // If there is at least one potential option word, generate menu
+  if (optionWords.length > 0) {
+    var cursorPoint = getCursorXY(content.length, content[content.length - 1].length);
+    createSelectionMenu(optionWords, cursorPoint.x, cursorPoint.y);
   }
 }
 
-
+/**
+ * Find the absolute position of the cursor relatie to the textarea
+ * @param {*} lineNumber 
+ * @param {*} lineLength 
+ */
 const getCursorXY = (lineNumber, lineLength) => {
   const paddingLeft = 30;
   const paddingTop = 20;
   const lineHeight = 20;
-  const letterWidth = 16;
+  const letterWidth = 10;
 
   const rect = textarea.getBoundingClientRect();
   return {
@@ -101,21 +101,28 @@ const getCursorXY = (lineNumber, lineLength) => {
   }
 }
 
-/*
+/** 
  * If selectionMenu is present, moves the selection menu the most recent cursor 
  * position
  */
 function moveSelectionMenuAsUserType() {
-  // TODO:
-  // Most likely call this every key press
+  if (selectionMenuPresent) {
+    /*
+    var content = document.getElementById(textAreaID).value.split("\n");
+    selectionMenu = document.getElementById(selectionMenuID);
+    var cursorPoint = getCursorXY(content.length, content[content.length - 1].length);
+    selectionMenu.style.left = cursorPoint.x +"px";   
+    selectionMenu.style.top = cursorPoint.y + "px";     
+    */
+  }
 }
 
 
-/* 
+/**
  * Create selection menu
- * Inputs:
- *    words - array or words in selection menu
- *    x, y - absolute position of menu
+ * @param {*} words array or words in selection menu
+ * @param {*} left absolute position of menu (x)
+ * @param {*} top absolute position of menu (y)
  */
 function createSelectionMenu(words, left, top){
   var newDiv = document.createElement("div");
@@ -142,17 +149,17 @@ function createSelectionMenu(words, left, top){
   selectionMenuPresent = true;
 }
 
-/* 
+/** 
  * Deletes the selection menu
  * Removes div object with selection class name
  */
 function deleteSelectionMenu() {
-  // TODO:
   selectionMenuPresent = false;
+  document.getElementById(selectionMenuID).remove();
   return
 }
 
-/* 
+/** 
  * Move selection menu to left top position
  */
 function moveSelectionMenu(left, top) {
@@ -160,21 +167,21 @@ function moveSelectionMenu(left, top) {
   return
 }
 
-/*
+/**
  * Replace the text[start:end] with newText, and returns
  * text with the replacement
- * Inputs:
- *    start - start of substring to replace
- *    end - end of substring to replace
- *    text - text to modify
- *    newText - text to replace with
+ * 
+ * @param {*} start start of substring to replace
+ * @param {*} end end of substring to replace
+ * @param {*} text  text to modify
+ * @param {*} newText text to replace with
  */
 function replaceText(start, end, text, newText) {
   // TODO: 
   return;
 }
 
-/*
+/** 
  * cursorClick is called when an option is selected with a cursor 
  * Replaces word with suggestion 
  */
@@ -183,7 +190,7 @@ function cursorClick() {
 
 }
 
-/*
+/** 
  * enterPress is called when user presses enter on a current highlighted option
  * or, if user chose not user the selection menu
  * 
@@ -196,12 +203,12 @@ function enterPress() {
   
 }
 
-/*
+/**
  * Moves Highlighted option based on arrow key
  * Updates the currentOptionIdNum up if up is true, down otherwise. 
  * 0 < currentOptionIdNum <= number of options 
- * Inputs:
- *  up - boolean if arrowPress was up
+ * 
+ * @param {*} up boolean true if arrowPress was up
  */
 function arrowPress(up) {
   // call this after listenting for a certain key press
@@ -225,7 +232,7 @@ function arrowPress(up) {
 }
 
 
-/* 
+/** 
  * Highlight the option in the selection menu 
  */
 function highlightOption(optionId) {
@@ -233,7 +240,7 @@ function highlightOption(optionId) {
   option.style.backgroundColor =  "#7b5294";
 }
 
-/* 
+/**  
  * Removes highlight the option in the selection menu 
  */
 function dehighlightOption(optionId) {
@@ -241,7 +248,7 @@ function dehighlightOption(optionId) {
   option.style.backgroundColor =  "#353A55";
 }
 
-/*
+/**
  * Toggle the mode as key or mouse (click or enter) autocomplete
  * selection feature
  */
@@ -250,7 +257,7 @@ function toggleMode() {
 }
 
 
-/*
+/**
  * Functions to call at start of program
  */
 function setUp() {
