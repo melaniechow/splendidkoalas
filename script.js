@@ -4,7 +4,7 @@
  * Reference: https://codepen.io/shotastage/pen/KaKwya
  * 
  * 
- * Listen to user inputs and determine when to create selection menu []
+ * Listen to user inputs and determine when to create selection menu [Celine]
  * Get location of user cursor []
  * Selection menu generator [DONE]
  * Move current highlighted option with arrow keys [DONE]
@@ -35,6 +35,8 @@ var selectionMenuPresent = true;
 var currentOptionIdNum = 1 ; 
 var clickMode = true; // Options are selected by click if true
 
+// Experiment Variables
+var keyWords = [];
 
 /*
  * Detects when selection Menu should be generated and where
@@ -234,5 +236,4 @@ document.body.onkeydown = function(e){
     } 
   }
 }
-
 setUp();
