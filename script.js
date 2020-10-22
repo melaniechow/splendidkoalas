@@ -36,7 +36,11 @@ var currentOptionIdNum = 1;
 var clickMode = true; // Options are selected by click if true
 
 // Experiment Variables
-var keyWords = ["square", "squareOne", "squareTwo"];
+var keyWords = ["length_of_the_rectangle", "width_of_the_rectangle", "width", "length", 
+                "the_total_area_inside_of_the_rectangle",
+                "personal_name", "pet_age", "pet_species","owner_name",
+                "new_owner_name",
+                "new_age"];
 var numMatching = 2;
 
 /**
@@ -54,24 +58,31 @@ function autocompleteDetection(textarea) {
     deleteSelectionMenu();
   }
   var content = textarea.value.split("\n");
-  var currentLineWords = content[content.length - 1].split(" ");
+  var currentLineWords = content[content.length - 1].split(/[\s,.]+/);
   var currentWord = currentLineWords[currentLineWords.length -1];
+
+  // Textarea value without the current word
+  var contentWithoutCurrentWord = 
+      textarea.value.substring(0, textarea.value.length - currentWord.length)
   var optionWords = []
 
   // if the currentword has at least numMatching letters, select as option.
   for (var i = 0; i < keyWords.length; i++) {
-    var count = 0;
-    var j = 0;
-    while (j < currentWord.length && j < keyWords[i].length) {
-      if (currentWord.charAt(j) == keyWords[i].charAt(j)) {
-        j++;
-        count++;
-      } else {
-        break;
+    if (contentWithoutCurrentWord.includes(keyWords[i])) { // If the keyword has been seen before
+
+      var count = 0;
+      var j = 0;
+      while (j < currentWord.length && j < keyWords[i].length) {
+        if (currentWord.charAt(j) == keyWords[i].charAt(j)) {
+          j++;
+          count++;
+        } else {
+          break;
+        }
       }
-    }
-    if (count >= numMatching && count >= currentWord.length) {
-      optionWords.push(keyWords[i]);
+      if (count >= numMatching && count >= currentWord.length) {
+        optionWords.push(keyWords[i]);
+      }
     }
   }
 
@@ -156,7 +167,7 @@ function deleteSelectionMenu() {
 function replaceTextLastWord(textarea, newWord) {
   const content = textarea.value;
   const lines = content.split("\n");
-  const currentLineWords = lines[lines.length - 1].split(" ");
+  const currentLineWords = lines[lines.length - 1].split(/[\s,.]+/);
   const currentWord = currentLineWords[currentLineWords.length - 1];
   
   if (content === currentWord) {
@@ -242,11 +253,8 @@ function toggleMode() {
   clickMode = !clickMode;
 }
 
-
-/**
- * Functions to call at start of program
- */
-function setUp() {
+function addTab(textarea) {
+  textarea.value = textarea.value + "    ";
 }
 
 // Keypress event listenter
@@ -262,11 +270,16 @@ document.body.onkeypress = function(e){
 // On keydown
 document.body.onkeydown = function(e){
   // Prevent arrow keys from scrolling the page
-  if([37, 38, 39, 40].indexOf(e.keyCode) > -1) { 
+  /*if([37, 38, 39, 40].indexOf(e.keyCode) > -1) { 
     e.preventDefault();
-  }
+  }*/
 
+  if (e.code == "Tab") {
+    e.preventDefault();
+    addTab(textarea);
+  }
   if (selectionMenuPresent && !clickMode) {
+    
     if(e.code == "ArrowDown"){
       arrowPress(false);
     } else if (e.code == "ArrowUp") {
