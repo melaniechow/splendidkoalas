@@ -1,5 +1,5 @@
 # splendidkoalas
 
-![Code Editor](images/CodeEditor.png)
+![Code Editor](images/CodeEditor2.png)
 
 
