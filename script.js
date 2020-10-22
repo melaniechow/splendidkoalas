@@ -200,7 +200,7 @@ function arrowPress(up) {
   // call this after listenting for a certain key press
   if (up) {
     // Move up
-    if (currentOptionIdNum > 0) {
+    if (currentOptionIdNum > 1) {
       dehighlightOption(baseOptionId + currentOptionIdNum);
       currentOptionIdNum =  currentOptionIdNum - 1;
       highlightOption(baseOptionId + currentOptionIdNum);
