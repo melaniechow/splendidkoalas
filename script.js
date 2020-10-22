@@ -30,27 +30,76 @@ var selectionMenuID = "selectionMenu";
 var textarea = document.getElementById(textAreaID);
 
 // State of the site
-var selectionMenuPresent = true; 
+var selectionMenuPresent = false; 
 // current highlighted Option, this will change based on arrow key presses
-var currentOptionIdNum = 1 ; 
+var currentOptionIdNum = 2; 
 var clickMode = true; // Options are selected by click if true
 
 // Experiment Variables
-var keyWords = [];
+var keyWords = ["square"];
+var numMatching = 2;
+
+/**
+ * Function is called every time user types in textarea
+ */
+function detectOption() {
+  moveSelectionMenuAsUserType();
+  autocompleteDetection();
+}
 
 /*
  * Detects when selection Menu should be generated and where
  */
 function autocompleteDetection() {
-  // TODO:
-  var content = document.getElementById(textAreaId).value.split("\n");
-  var currentLineWords = content[content.length - 1].split(" ");
-  var currentWord = currentLineWords[currentLineWords.length -1];
+  if (!selectionMenuPresent) {
+    var content = document.getElementById(textAreaID).value.split("\n");
+    var currentLineWords = content[content.length - 1].split(" ");
+    var currentWord = currentLineWords[currentLineWords.length -1];
+    var optionWords = []
 
-  // determing if currentWord is something we want to edit
+    // if the currentword has at least numMatching letters, select as option.
+    for (var i = 0; i < keyWords.length; i++) {
+      var count = 0;
+      var j = 0;
+      while (j < currentWord.length && j < keyWords[i].length) {
+        if (count >= numMatching) {
+          break;
+        }
+        if (currentWord.charAt(j) == keyWords[i].charAt(j)) {
+          j++;
+          count++;
+          
+        } else {
+          break;
+        }
+      }
+      
+      if (count >= numMatching) {
+        optionWords.push(keyWords[i]);
+      }
+    }
+  
+    // If there is at least one potential option word, generate menu
+    if (optionWords.length > 0) {
+      var cursorPoint = getCursorXY(content.length, content[content.length - 1].length);
+      createSelectionMenu(optionWords, cursorPoint.x, cursorPoint.y);
+    }
+  }
 }
 
 
+const getCursorXY = (lineNumber, lineLength) => {
+  const paddingLeft = 30;
+  const paddingTop = 20;
+  const lineHeight = 20;
+  const letterWidth = 16;
+
+  const rect = textarea.getBoundingClientRect();
+  return {
+    x: letterWidth * lineLength + rect.x + paddingLeft,
+    y: (lineHeight * lineNumber) + rect.y + paddingTop,
+  }
+}
 
 /*
  * If selectionMenu is present, moves the selection menu the most recent cursor 
@@ -90,6 +139,7 @@ function createSelectionMenu(words, left, top){
   newDiv.style.left = left + "px";
   newDiv.style.top = top + "px";
   highlightOption(baseOptionId + 1);
+  selectionMenuPresent = true;
 }
 
 /* 
@@ -154,7 +204,6 @@ function enterPress() {
  *  up - boolean if arrowPress was up
  */
 function arrowPress(up) {
-  // TODO:
   // call this after listenting for a certain key press
   if (up) {
     // Move up
@@ -200,12 +249,11 @@ function toggleMode() {
   clickMode = !clickMode;
 }
 
+
 /*
  * Functions to call at start of program
  */
 function setUp() {
-  // Example Selection Menu
-  createSelectionMenu(["Peaches", "Totoro"],450,880);
 }
 
 // Keypress event listenter
@@ -213,11 +261,7 @@ document.body.onkeypress = function(e){
   if (selectionMenuPresent && !clickMode) {
     if(e.code == "Enter"){
         enterPress();
-    } else {
-      // Check the user input after every letter
-      moveSelectionMenuAsUserType();
-      autocompleteDetection();
-    }
+    } 
   } 
 }
 

@@ -12,19 +12,12 @@
     <label for="switch" class="toggle">Key &nbsp Mouse</label> 
 
     <div class="InputArea">
-      <textarea class="Textarea"id="Input" autofocus placeholder="...Start writing something!"></textarea>
+      <textarea class="Textarea"id="Input" oninput="detectOption()" autofocus placeholder="...Start writing something!"></textarea>
       <pre>
         <code id="output" class="preview javascript">
         </code>
       </pre>
     </div>
-
-    <p> Hover over buttons to see colour change.
-      Below is an example of a 'option' that you can select </p>
-    <button class="Option">Peaches</button>
-
-    <p> Below is an example of a selection menu </p>
-    
   </body>
   <script src="script.js"></script>
 </html>
