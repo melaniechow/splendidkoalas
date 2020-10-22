@@ -9,8 +9,8 @@
  * Selection menu generator [DONE]
  * Move current highlighted option with arrow keys [DONE]
  * Select option with arrow keys or on click []
- * Move selection menu as user types []
- * ?? Dynamic selection menu changes as user writes more? []
+ * Move selection menu as user types [DONE]
+ * Dynamic selection menu changes as user writes more? [DONE]
  * 
  * Replace text with suggestion after a trigger action []
  *    Tab []
@@ -43,18 +43,17 @@ var numMatching = 2;
  * Function is called every time user types in textarea
  */
 function detectOption() {
-  moveSelectionMenuAsUserType();
-  autocompleteDetection();
+  autocompleteDetection(textarea);
 }
 
 /**
  * Detects when selection Menu should be generated and where
  */
-function autocompleteDetection() {
+function autocompleteDetection(textarea) {
   if (selectionMenuPresent) {
     deleteSelectionMenu();
   }
-  var content = document.getElementById(textAreaID).value.split("\n");
+  var content = textarea.value.split("\n");
   var currentLineWords = content[content.length - 1].split(" ");
   var currentWord = currentLineWords[currentLineWords.length -1];
   var optionWords = []
@@ -78,7 +77,9 @@ function autocompleteDetection() {
 
   // If there is at least one potential option word, generate menu
   if (optionWords.length > 0) {
-    var cursorPoint = getCursorXY(content.length, content[content.length - 1].length);
+    var cursorPoint = getCursorXY(textarea, 
+                                  content.length, 
+                                  content[content.length - 1].length);
     createSelectionMenu(optionWords, cursorPoint.x, cursorPoint.y);
   }
 }
@@ -88,7 +89,7 @@ function autocompleteDetection() {
  * @param {*} lineNumber 
  * @param {*} lineLength 
  */
-const getCursorXY = (lineNumber, lineLength) => {
+const getCursorXY = (textarea, lineNumber, lineLength) => {
   const paddingLeft = 30;
   const paddingTop = 20;
   const lineHeight = 20;
@@ -100,23 +101,6 @@ const getCursorXY = (lineNumber, lineLength) => {
     y: (lineHeight * lineNumber) + rect.y + paddingTop,
   }
 }
-
-/** 
- * If selectionMenu is present, moves the selection menu the most recent cursor 
- * position
- */
-function moveSelectionMenuAsUserType() {
-  if (selectionMenuPresent) {
-    /*
-    var content = document.getElementById(textAreaID).value.split("\n");
-    selectionMenu = document.getElementById(selectionMenuID);
-    var cursorPoint = getCursorXY(content.length, content[content.length - 1].length);
-    selectionMenu.style.left = cursorPoint.x +"px";   
-    selectionMenu.style.top = cursorPoint.y + "px";     
-    */
-  }
-}
-
 
 /**
  * Create selection menu
@@ -136,7 +120,7 @@ function createSelectionMenu(words, left, top){
     option.id = baseOptionId + (i+1);
     option.innerHTML = words[i];
     if (clickMode) { // If click mode, select option upon clicking
-      option.onclick = cursorClick();
+      option.onclick = function() {cursorClick(this);};
     }
     ul.appendChild(option)
   }
@@ -145,8 +129,12 @@ function createSelectionMenu(words, left, top){
   newDiv.style.position = "absolute";
   newDiv.style.left = left + "px";
   newDiv.style.top = top + "px";
-  highlightOption(baseOptionId + 1);
   selectionMenuPresent = true;
+
+  if (!clickMode) {
+    highlightOption(baseOptionId + 1);
+  }
+  
 }
 
 /** 
@@ -156,38 +144,36 @@ function createSelectionMenu(words, left, top){
 function deleteSelectionMenu() {
   selectionMenuPresent = false;
   document.getElementById(selectionMenuID).remove();
-  return
-}
-
-/** 
- * Move selection menu to left top position
- */
-function moveSelectionMenu(left, top) {
-  // TODO:
+  currentOptionIdNum = 1;
   return
 }
 
 /**
- * Replace the text[start:end] with newText, and returns
- * text with the replacement
+ * Replaces the last word of the textarea with newWord
  * 
- * @param {*} start start of substring to replace
- * @param {*} end end of substring to replace
- * @param {*} text  text to modify
- * @param {*} newText text to replace with
+ * @param {*} newWord text to replace with
  */
-function replaceText(start, end, text, newText) {
-  // TODO: 
-  return;
+function replaceTextLastWord(textarea, newWord) {
+  const content = textarea.value;
+  const lines = content.split("\n");
+  const currentLineWords = lines[lines.length - 1].split(" ");
+  const currentWord = currentLineWords[currentLineWords.length - 1];
+  
+  if (content === currentWord) {
+    textarea.value = newWord;
+  } else {
+    textarea.value = content.substring(0, content.length - currentWord.length) + newWord;
+  }
+  deleteSelectionMenu();
+  textarea.focus();
 }
 
 /** 
  * cursorClick is called when an option is selected with a cursor 
  * Replaces word with suggestion 
  */
-function cursorClick() {
-  // TODO:
-
+function cursorClick(option) {
+  replaceTextLastWord(textarea, option.innerHTML);
 }
 
 /** 
