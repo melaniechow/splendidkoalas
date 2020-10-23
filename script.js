@@ -242,7 +242,6 @@ function arrowPress(up) {
   }
 }
 
-
 /** 
  * Highlight the option in the selection menu 
  */
@@ -283,10 +282,6 @@ document.body.onkeypress = function(e){
 
 // On keydown
 document.body.onkeydown = function(e){
-  // Prevent arrow keys from scrolling the page
-  /*if([37, 38, 39, 40].indexOf(e.keyCode) > -1) { 
-    e.preventDefault();
-  }*/
 
   if (e.code == "Tab") {
     e.preventDefault();
