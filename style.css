@@ -7,6 +7,10 @@ body{
   text-align: center;
   font-family: 'Source Code Pro', monospace;
 }
+img{
+  float:left;
+  margin-left:150px;
+}
 
 .InputArea {
   position: relative;
@@ -97,7 +101,7 @@ label{
   font-size: 18px;
 }
 .toggle { 
-  left: 450px;
+  left: 50px;
   bottom: 30px;
   position : relative; 
   display : inline-block; 
